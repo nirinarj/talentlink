@@ -86,6 +86,13 @@ DATABASES = {
 }
 
 
+# Authentication Backends (Permet la connexion avec l'adresse e-mail)
+AUTHENTICATION_BACKENDS = [
+    'backend.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 # Password validation
 # https://docs.djangoproject.com/en/6.1/topics/auth/passwords/
 
