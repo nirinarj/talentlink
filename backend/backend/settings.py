@@ -138,9 +138,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# Autoriser le frontend React (Vite) à communiquer avec Django
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://talentlink-frontend-lilac.vercel.app",
-]
+# Autoriser toutes les origines temporairement pour éliminer les erreurs CORS
+CORS_ALLOW_ALL_ORIGINS = True
