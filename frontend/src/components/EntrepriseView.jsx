@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import API_URL from './config';
+import { API_URL } from "../config";
 import { Briefcase, PlusCircle, FileText, User, Calendar, CheckCircle, XCircle, Lock, MapPin, DollarSign } from 'lucide-react';
 
 export default function EntrepriseView({ themeStyles, activeTab, currentUser, companyName, fetchJobs, applications, setApplications }) {
