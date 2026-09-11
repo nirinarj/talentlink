@@ -76,7 +76,7 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
         </div>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <div>
           <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#475569', marginBottom: '5px' }}>Vous êtes :</label>
           <select 
@@ -147,9 +147,8 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
         </div>
 
         <button 
-          type="button" 
+          type="submit" 
           disabled={loading}
-          onClick={handleRegister}
           style={{ 
             width: '100%', 
             background: loading ? '#9ca3af' : '#10b981', 
@@ -167,7 +166,7 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
         >
           {loading ? "Patientez..." : "Créer un compte"}
         </button>
-      </div>
+      </form>
 
       <p style={{ marginTop: '20px', textAlign: 'center', fontSize: '14px', color: '#64748b' }}>
         Déjà un compte ? <span onClick={onSwitchToLogin} style={{ color: '#2563eb', cursor: 'pointer', fontWeight: 'bold' }}>Se connecter</span>

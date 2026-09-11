@@ -21,9 +21,8 @@ export default function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [companyName, setCompanyName] = useState('Telma'); 
+  const [telephone, setTelephone] = useState('');
+  const [companyName, setCompanyName] = useState(''); 
 
   const [currentUser, setCurrentUser] = useState(null);
   const [jobs, setJobs] = useState([]);
@@ -72,8 +71,11 @@ export default function App() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: email.trim(), password, role: userRole,
-            first_name: firstName.trim(), last_name: lastName.trim(), company_name: companyName.trim()
+            email: email.trim(), 
+            password, 
+            role: userRole,
+            telephone: telephone.trim(),
+            entreprise_nom: userRole === 'entreprise' ? companyName.trim() : ''
           })
         });
         if (response.ok) {
@@ -83,10 +85,11 @@ export default function App() {
           fetchUsers();
         } else {
           const data = await response.json();
-          alert("Erreur : " + JSON.stringify(data));
+          alert("Erreur : " + (data.error || JSON.stringify(data)));
         }
       } catch (error) {
         console.error("Erreur réseau :", error);
+        alert("Impossible de joindre le serveur.");
       }
       return;
     } 
@@ -120,6 +123,7 @@ export default function App() {
         }
       } catch (error) {
         console.error("Erreur réseau :", error);
+        alert("Impossible de joindre le serveur.");
       }
     }
   };
@@ -143,7 +147,7 @@ export default function App() {
         userRole={userRole} setUserRole={setUserRole} authMode={authMode} setAuthMode={setAuthMode}
         email={email} setEmail={setEmail} password={password} setPassword={setPassword}
         confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
-        firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName}
+        telephone={telephone} setTelephone={setTelephone}
         companyName={companyName} setCompanyName={setCompanyName} handleAuthSubmit={handleAuthSubmit}
         activeColor={activeColor}
       />
