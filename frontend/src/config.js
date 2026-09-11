@@ -1,3 +1,2 @@
-export const API_URL = window.location.hostname === 'localhost' 
-  ? 'http://127.0.0.1:8000' 
-  : 'https://plateforme-backend-lm08.onrender.com';
+// Remplacez l'URL ci-dessous par l'URL de votre backend sur Render (ex: https://talentlink-backend.onrender.com)
+export const API_URL = import.meta.env.VITE_API_URL || 'https://votre-backend.onrender.com';
