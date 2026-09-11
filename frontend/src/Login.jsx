@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import API_URL from './config';
+import { API_URL } from './config';
 
 export default function Login({ onLoginSuccess, onSwitchToRegister }) {
   const [email, setEmail] = useState('');
