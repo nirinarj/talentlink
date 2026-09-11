@@ -1,33 +1,62 @@
 import { useState } from 'react';
+import { API_URL } from './config';
 import { Briefcase, Send, FileText, CheckCircle, XCircle, Clock, Lock, MapPin, DollarSign, Calendar } from 'lucide-react';
 
 export default function CandidatView({ themeStyles, activeTab, jobs, currentUser, applications, setApplications }) {
   const [selectedJob, setSelectedJob] = useState(null);
   const [cvFile, setCvFile] = useState(null);
   const [lmFile, setLmFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleApplySubmit = (e) => {
+  const handleApplySubmit = async (e) => {
     e.preventDefault();
     if (!selectedJob) return;
 
-    const newApplication = {
-      jobTitle: selectedJob.title,
-      company: selectedJob.company || 'Entreprise',
-      candidateEmail: currentUser?.email || 'candidat@talentlink.mg',
-      cvName: cvFile ? cvFile.name : 'CV_par_defaut.pdf',
-      cvUrl: cvFile ? URL.createObjectURL(cvFile) : '#',
-      lmName: lmFile ? lmFile.name : 'LM_par_defaut.pdf',
-      lmUrl: lmFile ? URL.createObjectURL(lmFile) : '#',
-      status: 'En attente',
-      feedbackMessage: '',
-      date: new Date().toLocaleDateString()
-    };
+    setLoading(true);
 
-    setApplications([...applications, newApplication]);
-    alert("Candidature envoyée avec succès !");
-    setSelectedJob(null);
-    setCvFile(null);
-    setLmFile(null);
+    const formData = new FormData();
+    formData.append('job', selectedJob.id); // ID de l'offre d'emploi
+    formData.append('candidate_email', currentUser?.email || 'candidat@talentlink.mg');
+    if (cvFile) formData.append('cv', cvFile);
+    if (lmFile) formData.append('cover_letter', lmFile);
+
+    try {
+      const response = await fetch(`${API_URL}/api/applications/`, {
+        method: 'POST',
+        body: formData, // Pas de Header 'Content-Type' avec FormData, le navigateur le gère automatiquement pour les fichiers
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        const newApplication = {
+          jobTitle: selectedJob.title,
+          company: selectedJob.company || 'Entreprise',
+          candidateEmail: currentUser?.email || 'candidat@talentlink.mg',
+          cvName: cvFile ? cvFile.name : 'CV_par_defaut.pdf',
+          cvUrl: cvFile ? URL.createObjectURL(cvFile) : '#',
+          lmName: lmFile ? lmFile.name : 'LM_par_defaut.pdf',
+          lmUrl: lmFile ? URL.createObjectURL(lmFile) : '#',
+          status: 'En attente',
+          feedbackMessage: '',
+          date: new Date().toLocaleDateString()
+        };
+
+        setApplications([...applications, newApplication]);
+        alert("Candidature envoyée avec succès !");
+        setSelectedJob(null);
+        setCvFile(null);
+        setLmFile(null);
+      } else {
+        const errorData = await response.json();
+        alert("Erreur lors de l'envoi : " + JSON.stringify(errorData));
+      }
+    } catch (err) {
+      console.error("Erreur réseau :", err);
+      alert("Erreur de connexion avec le serveur.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -81,7 +110,9 @@ export default function CandidatView({ themeStyles, activeTab, jobs, currentUser
                   <input type="file" onChange={(e) => setLmFile(e.target.files[0])} required style={{ width: '100%', padding: '8px', border: `1px solid ${themeStyles.border}`, borderRadius: '8px', background: themeStyles.inputBg, color: themeStyles.text, boxSizing: 'border-box' }} />
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <button className="action-btn" type="submit" style={{ background: '#f43f5e', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Envoyer ma candidature</button>
+                  <button className="action-btn" type="submit" disabled={loading} style={{ background: '#f43f5e', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', opacity: loading ? 0.7 : 1 }}>
+                    {loading ? "Envoi en cours..." : "Envoyer ma candidature"}
+                  </button>
                   <button type="button" onClick={() => setSelectedJob(null)} style={{ background: 'transparent', color: themeStyles.text, border: `1px solid ${themeStyles.border}`, padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Annuler</button>
                 </div>
               </form>
@@ -114,7 +145,7 @@ export default function CandidatView({ themeStyles, activeTab, jobs, currentUser
         </div>
       )}
 
-      {/* 3. SECTION MES CANDIDATURES (AVEC PROTECTION ET CADENAS SI CE N'EST PAS UN CANDIDAT) */}
+      {/* 3. SECTION MES CANDIDATURES */}
       {activeTab === 'candidatures' && (
         <div>
           {currentUser?.role !== 'candidat' ? (
@@ -145,7 +176,6 @@ export default function CandidatView({ themeStyles, activeTab, jobs, currentUser
                       </p>
                       <p style={{ fontSize: '13px', color: themeStyles.subText, marginBottom: '10px' }}>Entreprise : <b>{app.company}</b></p>
 
-                      {/* Statut de la candidature */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
                         <span style={{ fontSize: '13px', fontWeight: '600' }}>Statut :</span>
                         {app.status === 'Accepté' ? (
@@ -163,7 +193,6 @@ export default function CandidatView({ themeStyles, activeTab, jobs, currentUser
                         )}
                       </div>
 
-                      {/* Message de retour de l'entreprise si disponible */}
                       {app.feedbackMessage && (
                         <div style={{ fontSize: '13px', background: themeStyles.cardBg, padding: '10px', borderRadius: '6px', border: `1px solid ${themeStyles.border}`, color: themeStyles.text, marginTop: '8px' }}>
                           <b>Message de l'entreprise :</b> {app.feedbackMessage}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_URL from './config';
 import { Briefcase, PlusCircle, FileText, User, Calendar, CheckCircle, XCircle, Lock, MapPin, DollarSign } from 'lucide-react';
 
 export default function EntrepriseView({ themeStyles, activeTab, currentUser, companyName, fetchJobs, applications, setApplications }) {
@@ -10,7 +11,7 @@ export default function EntrepriseView({ themeStyles, activeTab, currentUser, co
 
   const loadAllJobs = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/jobs/');
+      const response = await fetch(`${API_URL}/api/jobs/`);
       if (response.ok) {
         const data = await response.json();
         setAllJobs(data);
@@ -32,7 +33,7 @@ export default function EntrepriseView({ themeStyles, activeTab, currentUser, co
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/jobs/', {
+      const response = await fetch(`${API_URL}/api/jobs/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

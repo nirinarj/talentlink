@@ -3,6 +3,7 @@ import LoginView from './components/LoginView';
 import CandidatView from './components/CandidatView';
 import EntrepriseView from './components/EntrepriseView';
 import AdminView from './components/AdminView';
+import { API_URL } from './config';
 import { LayoutDashboard, Briefcase, Send, Users, LogOut, Sun, Moon } from 'lucide-react';
 
 export default function App() {
@@ -32,7 +33,7 @@ export default function App() {
 
   const fetchJobs = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/jobs/');
+      const response = await fetch(`${API_URL}/api/jobs/`);
       if (response.ok) {
         const data = await response.json();
         setJobs(data);
@@ -44,7 +45,7 @@ export default function App() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/users/');
+      const response = await fetch(`${API_URL}/api/users/`);
       if (response.ok) {
         const data = await response.json();
         setUsersList(data);
@@ -67,7 +68,7 @@ export default function App() {
         return;
       }
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/register/', {
+        const response = await fetch(`${API_URL}/api/register/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -101,7 +102,7 @@ export default function App() {
       }
 
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/login/', {
+        const response = await fetch(`${API_URL}/api/login/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: email.trim(), password })
@@ -153,7 +154,7 @@ export default function App() {
     <div style={{ minHeight: '100vh', background: themeStyles.bg, padding: '20px', transition: 'background 0.3s' }}>
       <div style={{ maxWidth: '950px', margin: '0 auto', fontFamily: 'Segoe UI, sans-serif' }}>
         
-        {/* Bouton Mode Nuit uniquement (le sélecteur de rôle a été supprimé) */}
+        {/* Bouton Mode Nuit uniquement */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '10px' }}>
           <button 
             onClick={() => setDarkMode(!darkMode)}
@@ -175,7 +176,6 @@ export default function App() {
               <LayoutDashboard size={15} /> {userRole === 'admin' ? 'Administration' : 'Tableau de bord'}
             </button>
 
-            {/* Bouton Utilisateurs visible exclusivement pour l'administrateur */}
             {userRole === 'admin' && (
               <button onClick={() => setActiveTab('users')} style={{ background: activeTab === 'users' ? activeColor : (darkMode ? '#334155' : '#f1f5f9'), color: activeTab === 'users' ? 'white' : themeStyles.text, border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }}>
                 <Users size={15} /> Utilisateurs

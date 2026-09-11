@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { API_URL } from './config';
 import { MapPin, Search, ArrowLeft, X, Upload, CheckCircle, PlusCircle, Building, User, LogOut, Lock, Mail, Sun, Moon } from 'lucide-react';
 import Candidatures from './candidatures';
 
@@ -38,7 +39,7 @@ export default function OffresDEmplois() {
   });
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/jobs/")
+    fetch(`${API_URL}/api/jobs/`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -51,7 +52,7 @@ export default function OffresDEmplois() {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     let globalRes;
-    fetch("http://127.0.0.1:8000/api/login/", {
+    fetch(`${API_URL}/api/login/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: authForm.email, password: authForm.password })
@@ -77,7 +78,7 @@ export default function OffresDEmplois() {
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
     let globalRes;
-    fetch("http://127.0.0.1:8000/api/register/", {
+    fetch(`${API_URL}/api/register/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(authForm)
@@ -136,7 +137,7 @@ export default function OffresDEmplois() {
     formData.append("cv", cvFile);
     formData.append("cover_letter", candidateForm.coverLetter);
 
-    fetch("http://127.0.0.1:8000/api/applications/", {
+    fetch(`${API_URL}/api/applications/`, {
       method: "POST",
       body: formData
     })
@@ -155,7 +156,7 @@ export default function OffresDEmplois() {
 
   const handlePublishJob = (e) => {
     e.preventDefault();
-    fetch("http://127.0.0.1:8000/api/jobs/", {
+    fetch(`${API_URL}/api/jobs/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newJobForm)
@@ -164,14 +165,13 @@ export default function OffresDEmplois() {
       alert("Offre d'emploi publiée avec succès !");
       setNewJobForm({ title: '', company: '', location: 'Antananarivo', description: '' });
       setActiveTab('offres');
-      return fetch("http://127.0.0.1:8000/api/jobs/");
+      return fetch(`${API_URL}/api/jobs/`);
     })
     .then(res => res.json())
     .then(data => { if (Array.isArray(data)) setJobs(data); })
     .catch(err => console.error("Erreur publication:", err));
   };
 
-  // Styles dynamiques selon le mode (Clair / Nuit)
   const theme = {
     bg: darkMode ? '#0f172a' : '#f8fafc',
     cardBg: darkMode ? '#1e293b' : '#ffffff',
@@ -199,7 +199,6 @@ export default function OffresDEmplois() {
         .modal-content { animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       `}</style>
 
-      {/* Bouton global flottant ou fixe pour basculer le Mode Jour / Nuit */}
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
           <button 
@@ -572,15 +571,16 @@ export default function OffresDEmplois() {
                                   <span>CV : {cvFile.name}</span>
                                 </div>
                               ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', color: '#f43f5e', fontSize: '14px', fontWeight: '500' }}>
-                                  <Upload size={24} />
-                                  <span>Cliquez ici pour téléverser votre CV (PDF, DOC)</span>
+                                <div style={{ color: theme.textMuted, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                                  <Upload size={24} color="#f43f5e" />
+                                  <span style={{ fontSize: '14px', fontWeight: '600', color: theme.textMain }}>Cliquez pour importer votre CV</span>
+                                  <span style={{ fontSize: '12px' }}>Formats acceptés : PDF, DOC, DOCX</span>
                                 </div>
                               )}
                             </div>
 
                             <button type="submit" style={{ width: '100%', background: '#f43f5e', color: 'white', border: 'none', padding: '14px', borderRadius: '50px', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer' }}>
-                              Envoyer la candidature
+                              Envoyer ma candidature
                             </button>
                           </form>
                         </div>
@@ -589,44 +589,43 @@ export default function OffresDEmplois() {
                   </div>
                 ) : (
                   <div>
-                    {/* Barre de recherche et liste des offres */}
-                    <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', flex: 1, background: theme.cardBg, border: `1px solid ${theme.border}`, borderRadius: '50px', padding: '0 15px' }}>
+                    <div style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', flex: 1, border: `1px solid ${theme.border}`, borderRadius: '50px', padding: '0 15px', background: theme.cardBg, boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
                         <Search size={18} color={theme.textMuted} />
                         <input 
                           type="text" 
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          placeholder="Rechercher par poste, entreprise, lieu..."
-                          style={{ width: '100%', padding: '12px 10px', border: 'none', outline: 'none', background: 'transparent', color: theme.textMain }}
+                          placeholder="Rechercher par poste, entreprise, lieu..." 
+                          style={{ width: '100%', padding: '12px 10px', border: 'none', outline: 'none', background: 'transparent', color: theme.textMain, fontSize: '14px' }} 
                         />
                       </div>
                       <button 
                         onClick={handleSearchClick}
-                        style={{ background: '#f43f5e', color: 'white', border: 'none', padding: '0 25px', borderRadius: '50px', fontWeight: '600', cursor: 'pointer' }}
+                        style={{ background: '#f43f5e', color: 'white', border: 'none', padding: '0 24px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}
                       >
                         Rechercher
                       </button>
                     </div>
 
                     <div style={{ display: 'grid', gap: '15px' }}>
-                      {filteredJobs.length > 0 ? (
-                        filteredJobs.map(job => (
+                      {filteredJobs.length === 0 ? (
+                        <p style={{ textAlign: 'center', color: theme.textMuted, padding: '40px 0' }}>Aucune offre d'emploi trouvée.</p>
+                      ) : (
+                        filteredJobs.map((job) => (
                           <div 
                             key={job.id} 
                             className="job-card"
                             onClick={() => setSelectedJob(job)}
                             style={{ background: theme.cardBg, padding: '20px', borderRadius: '16px', border: `1px solid ${theme.border}`, cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
                           >
-                            <h3 style={{ fontSize: '18px', color: theme.textMain, marginBottom: '6px', fontWeight: 'bold' }}>{job.title}</h3>
-                            <p style={{ fontSize: '14px', color: theme.textMuted, fontWeight: '600', marginBottom: '10px' }}>{job.company}</p>
+                            <h2 style={{ fontSize: '18px', color: theme.textMain, marginBottom: '6px', fontWeight: 'bold' }}>{job.title}</h2>
+                            <p style={{ fontSize: '14px', color: theme.textMuted, fontWeight: '600', marginBottom: '12px' }}>{job.company}</p>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: theme.textMuted, fontSize: '13px' }}>
                               <MapPin size={14} color="#ef4444" /> {job.location}
                             </div>
                           </div>
                         ))
-                      ) : (
-                        <p style={{ textAlign: 'center', color: theme.textMuted, padding: '40px 0' }}>Aucune offre d'emploi trouvée.</p>
                       )}
                     </div>
                   </div>
