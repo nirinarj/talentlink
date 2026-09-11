@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { API_URL } from './config';
+import { API_URL } from "../config";
 import { Briefcase, Send, FileText, CheckCircle, XCircle, Clock, Lock, MapPin, DollarSign, Calendar } from 'lucide-react';
 
 export default function CandidatView({ themeStyles, activeTab, jobs, currentUser, applications, setApplications }) {
