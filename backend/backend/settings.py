@@ -203,7 +203,10 @@ MEDIA_ROOT = BASE_DIR / "media"
 # ============================================================
 
 CORS_ALLOWED_ORIGINS = [
-    # Nouveau Vercel
+    # Domaine de production actuel
+    "https://talentlink-puce.vercel.app",
+
+    # Nouveau/ancien domaine Vercel
     "https://talentlink-pql1g9v9z-nirina1.vercel.app",
 
     # Ancien Vercel
@@ -225,7 +228,10 @@ CORS_ALLOWED_ORIGINS = [
 # ============================================================
 
 CSRF_TRUSTED_ORIGINS = [
-    # Nouveau Vercel
+    # Domaine de production actuel
+    "https://talentlink-puce.vercel.app",
+
+    # Nouveau/ancien domaine Vercel
     "https://talentlink-pql1g9v9z-nirina1.vercel.app",
 
     # Ancien Vercel
